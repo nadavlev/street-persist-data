@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es6",
     "lib": [
       "es6",
       "dom"
@@ -15,7 +15,6 @@
     "noUnusedLocals": false,
     "rootDir": "src",
     "outDir": "dist",
-    "watch": false,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
   },

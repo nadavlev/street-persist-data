@@ -28,7 +28,7 @@ export class StreetsService{
 		return this._axios
 	}
 	static async getStreetsInCity(city: city): Promise<{city: city, streets: Pick<Street, 'streetId' | 'street_name'>[]}>{
-		const res = (await this.axios.post('https://data.gov.il/api/3/action/datastore_search', {resource_id:`1b14e41c-85b3-4c21-bdce-9fe48185ffca`, filters: {city_name: cities[city]}, limit: 100000})).data
+		const res = (await this.axios.post('https://data.gov.il/api/3/action/datastore_search', {resource_id:`1b14e41c-85b3-4c21-bdce-9fe48185ffca`, filters: {city_name: cities[city]}, limit: 100000, include_total: true})).data
 		const results = res.result.records
 		if (!results || !results.length) {
 			throw new Error('No streets found for city: ' + city)
@@ -39,15 +39,19 @@ export class StreetsService{
 		return {city, streets}
 	}
 
-	static async getStreetInfoById(id: number){
-		const res = (await this.axios.post('https://data.gov.il/api/3/action/datastore_search', {resource_id:`1b14e41c-85b3-4c21-bdce-9fe48185ffca`, filters: {_id: id}, limit: 1})).data
+	static async getStreetInfoById(ids: number[]): Promise<Street[]> {
+		const res = (await this.axios.post('https://data.gov.il/api/3/action/datastore_search', {resource_id:`1b14e41c-85b3-4c21-bdce-9fe48185ffca`, filters: {_id: ids}, limit: 100000, include_total: true})).data
 		const results = res.result.records
 		if (!results || !results.length) {
-			throw new Error('No street found for id: ' + id)
+			throw new Error('No street found for id: ' + ids)
 		}
-		const dbStreet: ApiStreet = results[0]
-		const cityName = enlishNameByCity[dbStreet.city_name]
-		const street: Street = {...omit<ApiStreet>(dbStreet, '_id'), streetId: dbStreet._id, city_name: cityName, region_name: dbStreet.region_name.trim(), street_name: dbStreet.street_name.trim()}
-		return street
+		const streets: Street[] = []
+		for (const result of results) {
+			const dbStreet: ApiStreet = result
+			const cityName = enlishNameByCity[dbStreet.city_name]
+			const street: Street = {...omit<ApiStreet>(dbStreet, '_id'), streetId: dbStreet._id, city_name: cityName, region_name: dbStreet.region_name.trim(), street_name: dbStreet.street_name.trim()}
+			streets.push(street)
+		}
+		return streets
 	}
 }
