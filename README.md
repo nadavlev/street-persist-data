@@ -1,7 +1,16 @@
 # **data-managment-interview**
 ### Description
  - Public repository with the data management team's technichal interview assignment inside  
- ---
+ 
+
+## To run the project in dev mode
+
+```bash
+npm run dev
+```
+Every thing else is very standard. 
+
+
  ## Assignment specification:
 Your assignment is to insert data about street names in israel to a database, using some kind of a queueing platform.\
 The assignment is to be done in nodejs + Typescript (node version 16.X, npm version 8.X, typescript version 4.X).\
